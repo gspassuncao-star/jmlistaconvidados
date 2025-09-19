@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Clientes - Evento</title>
+    <style>
+        /* Estilos básicos para o formulário - você pode personalizar mais */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Controle de Entrada de Clientes</h2>
+        <form id="registroForm">
+            <div class="form-group">
+                <label for="evento">Evento:</label>
+                <select id="evento" name="Evento" required>
+                    <option value="">Selecione um evento</option>
+                    <option value="Jantar Musical">Jantar Musical</option>
+                    <option value="Noite de Degustação">Noite de Degustação</option>
+                    <option value="Happy Hour Especial">Happy Hour Especial</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nome">Nome Completo:</label>
+                <input type="text" id="nome" name="Nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="celular">Celular:</label>
+                <!-- O type="tel" é a chave para sugerir o teclado numérico de telefone -->
+                <input type="tel" id="celular" name="Celular" pattern="[0-9]{10,11}" placeholder="Ex: 11987654321" required>
+                <small>Apenas números, com DDD (ex: 11987654321)</small>
+            </div>
+
+            <div class="form-group">
+                <label for="aniversario_dia">Aniversário (DD/MM):</label>
+                <div style="display: flex; gap: 10px;">
+                    <!-- inputmode="numeric" sugere o teclado numérico grande para dia e mês -->
+                    <input type="number" id="aniversario_dia" name="Dia Aniversario" min="1" max="31" placeholder="DD" inputmode="numeric" style="width: 70px;" required>
+                    <input type="number" id="aniversario_mes" name="Mes Aniversario" min="1" max="12" placeholder="MM" inputmode="numeric" style="width: 70px;" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="comanda">Número da Comanda:</label>
+                <!-- type="number" também sugere o teclado numérico -->
+                <input type="number" id="comanda" name="Comanda" inputmode="numeric" required>
+            </div>
+
+            <div class="form-group">
+                <label>É criança?</label><br>
+                <input type="radio" id="nao_crianca" name="Eh Crianca" value="Não" checked>
+                <label for="nao_crianca">Não</label><br>
+                <input type="radio" id="crianca_0_5" name="Eh Crianca" value="0-5 anos">
+                <label for="crianca_0_5">0-5 anos</label><br>
+                <input type="radio" id="crianca_6_12" name="Eh Crianca" value="6-12 anos">
+                <label for="crianca_6_12">6-12 anos</label>
+            </div>
+
+            <div class="form-group">
+                <label for="observacao">Observação:</label>
+                <textarea id="observacao" name="Observacao" rows="3"></textarea>
+            </div>
+
+            <button type="submit">Registrar Entrada</button>
+            <div id="formMessage" class="message"></div>
+        </form>
+    </div>
+
+    <script>
+        // Este é o JavaScript que lida com o envio do formulário
+        const form = document.getElementById('registroForm');
+        const formMessage = document.getElementById('formMessage');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
+
+            formMessage.textContent = 'Enviando...';
+            formMessage.className = 'message'; // Limpa classes de sucesso/erro
+
+            const formData = new FormData(form);
+            const data = {};
+            for (const [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            // Você PRECISARÁ COLOCAR A URL DO SEU GOOGLE APPS SCRIPT AQUI
+            // Veja o Passo 3 para obter esta URL
+            const gasUrl = 'https://script.google.com/macros/s/AKfycbwb96io-BCZ4kD358Nv3SlzUbF_g0wt1snySCC5TZjZ87b7EanmSUf5pZdK4eEJILqn/exec'; 
+
+            try {
+                const response = await fetch(gasUrl, {
+                    method: 'POST',
+                    mode: 'no-cors', // Necessário para evitar erros CORS com GAS simples
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data).toString()
+                });
+
+                // Como usamos 'no-cors', a resposta direta do fetch não pode ser lida.
+                // Contamos com o GAS para processar. Se chegou aqui sem erro, é provável que deu certo.
+                formMessage.textContent = 'Registro realizado com sucesso!';
+                formMessage.className = 'message success';
+                form.reset(); // Limpa o formulário após o envio
+            } catch (error) {
+                console.error('Erro ao enviar o formulário:', error);
+                formMessage.textContent = 'Ocorreu um erro ao registrar. Tente novamente.';
+                formMessage.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>
