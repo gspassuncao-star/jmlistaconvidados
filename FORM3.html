@@ -13,6 +13,8 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px; /* Adicionado padding para melhor visualização em telas pequenas */
+            box-sizing: border-box;
         }
         .container {
             background-color: #fff;
@@ -32,13 +34,14 @@
             display: block;
             margin-bottom: 8px;
             color: #555;
+            font-weight: bold; /* Adicionado para destacar labels */
         }
         input[type="text"],
         input[type="tel"],
         input[type="number"],
         select,
         textarea {
-            width: calc(100% - 20px);
+            width: calc(100% - 22px); /* Ajustado para compensar padding/border */
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
@@ -48,6 +51,18 @@
         }
         input[type="checkbox"] {
             margin-right: 8px;
+            transform: scale(1.2); /* Aumenta um pouco o tamanho do checkbox */
+            vertical-align: middle;
+        }
+        .checkbox-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-group label {
+            font-weight: normal; /* Labels de checkbox não tão bold */
+            margin-bottom: 0;
+            display: inline-block;
         }
         button {
             background-color: #007bff;
@@ -68,6 +83,7 @@
             padding: 10px;
             border-radius: 4px;
             text-align: center;
+            font-weight: bold;
         }
         .message.success {
             background-color: #d4edda;
@@ -103,9 +119,9 @@
             <label for="Comanda">Comanda:</label>
             <input type="text" id="Comanda" name="Comanda">
 
-            <div>
+            <div class="checkbox-group">
                 <input type="checkbox" id="Eh Crianca" name="Eh Crianca" value="Sim">
-                <label for="Eh Crianca" style="display: inline;">É Criança?</label>
+                <label for="Eh Crianca">É Criança?</label>
             </div>
 
             <label for="Observacao">Observação:</label>
@@ -143,6 +159,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        // Esta linha é crucial para tentar resolver o erro de CORS
+                        'Origin': 'https://gspassuncao-star.github.io' 
                     },
                     body: new URLSearchParams(data).toString()
                 });
