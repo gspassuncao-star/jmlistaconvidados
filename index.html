@@ -5,43 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Entrada para Evento</title>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4; /* Cor de fundo de fallback */
-        background-image: url('fundo.jpg'); /* <<<<<<< SUBSTITUA PELO CAMINHO DA SUA IMAGEM DE FUNDO */
-        background-size: cover; /* Faz a imagem cobrir toda a área */
-        background-position: center center; /* Centraliza a imagem */
-        background-repeat: no-repeat; /* Evita que a imagem se repita */
-        background-attachment: fixed; /* Mantém o fundo fixo ao rolar a página */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-    .container {
-        background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente para o formulário */
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 100%;
-        max-width: 500px;
-        box-sizing: border-box;
-    }
-    /* Adicione estas regras para estilizar a logo */
-    #logo {
-        max-width: 150px; /* Largura máxima para a logo */
-        height: auto; /* Mantém a proporção original da imagem */
-        margin-bottom: 25px; /* Espaço abaixo da logo e antes do título */
-        display: block; /* Garante que a logo ocupe sua própria linha */
-        margin-left: auto; /* Centraliza a logo horizontalmente */
-        margin-right: auto; /* Centraliza a logo horizontalmente */
-    }
-    /* ... o restante do seu CSS permanece o mesmo ... */
-</style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Apenas uma cor de fundo sólida */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            /* Mantemos a semi-transparência ou podemos remover o 'a' se quiser um branco sólido */
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        #logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 25px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* ... o restante do seu CSS (form-group, label, input, etc.) permanece o mesmo ... */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #response-message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -52,7 +100,6 @@
             <div class="form-group">
                 <label for="evento">Evento:</label>
                 <select id="evento" name="evento" required>
-                    <!-- Opções serão carregadas dinamicamente aqui -->
                     <option value="">Carregando eventos...</option>
                 </select>
             </div>
@@ -85,7 +132,7 @@
             <div class="form-group">
                 <label for="crianca">Criança?:</label>
                 <select id="crianca" name="crianca">
-                    <option value="Não" selected>Não</option> <!-- Opção padrão -->
+                    <option value="Não" selected>Não</option>
                     <option value="0 - 5 anos">0 - 5 anos</option>
                     <option value="6 - 10 anos">6 - 10 anos</option>
                 </select>
@@ -103,20 +150,18 @@
     </div>
 
     <script>
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbxX7AQ2SFJyyyzbjKC9Jutrxd_DrGxpauNi-jLX400DZ7wdNPFq4gu6pR-5BRH6u9k/exec"; // <<<<<<< SUBSTITUA AQUI PELO URL DO SEU GOOGLE APPS SCRIPT
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbxX7AQ2SFJyyyzbjKC9Jutrxd_DrGxpauNi-jLX400DZ7wdNPFq4gu6pR-5BRH6u9k/exec"; // SUBSTITUA AQUI PELO URL DO SEU GOOGLE APPS SCRIPT
         const eventoSelect = document.getElementById('evento');
         const responseMessageDiv = document.getElementById('response-message');
 
-        // --- Função para carregar os eventos dinamicamente ---
         async function loadEvents() {
-            eventoSelect.innerHTML = '<option value="">Carregando eventos...</option>'; // Mensagem de carregamento
+            eventoSelect.innerHTML = '<option value="">Carregando eventos...</option>';
             try {
-                // Requisição GET para o Apps Script com o parâmetro 'action=getEvents'
                 const response = await fetch(`${webAppUrl}?action=getEvents`);
                 const data = await response.json();
 
                 if (data.status === 'SUCCESS' && data.events) {
-                    eventoSelect.innerHTML = ''; // Limpa a mensagem de carregamento
+                    eventoSelect.innerHTML = '';
                     data.events.forEach(event => {
                         const option = document.createElement('option');
                         option.value = event;
@@ -124,7 +169,7 @@
                         eventoSelect.appendChild(option);
                     });
                     if (data.events.length > 0) {
-                        eventoSelect.selectedIndex = 0; // Seleciona o primeiro evento se houver
+                        eventoSelect.selectedIndex = 0;
                     } else {
                         eventoSelect.innerHTML = '<option value="">Nenhum evento disponível</option>';
                     }
@@ -139,29 +184,23 @@
             }
         }
 
-        // --- Chama a função para carregar os eventos assim que a página for carregada ---
         document.addEventListener('DOMContentLoaded', loadEvents);
 
-
-        // --- Lógica de submissão do formulário ---
         document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const form = event.target;
             const formData = new FormData(form);
 
-            // --- Validações Adicionais ---
             const aniversarioInput = document.getElementById('aniversario');
             const celularInput = document.getElementById('celular');
             const numeroComandaInput = document.getElementById('numeroComanda');
 
-            // Validação para Aniversário DD/MM (formato)
             if (aniversarioInput.value && (aniversarioInput.value.length !== 5 || aniversarioInput.value.indexOf('/') !== 2)) {
                 responseMessageDiv.innerHTML = '<p class="error">Por favor, digite o aniversário no formato DD/MM válido.</p>';
                 aniversarioInput.focus();
                 return;
             }
-            // Validação de dia e mês (básica)
             if (aniversarioInput.value) {
                 const [dia, mes] = aniversarioInput.value.split('/').map(Number);
                 if (isNaN(dia) || isNaN(mes) || dia < 1 || dia > 31 || mes < 1 || mes > 12) {
@@ -170,7 +209,6 @@
                      return;
                 }
             }
-            // Validação de número (Celular e Comanda)
             if (celularInput.value && !/^\d+$/.test(celularInput.value)) {
                 responseMessageDiv.innerHTML = '<p class="error">O campo Celular deve conter apenas números.</p>';
                 celularInput.focus();
@@ -181,7 +219,6 @@
                 numeroComandaInput.focus();
                 return;
             }
-            // --- Fim das Validações Adicionais ---
 
             responseMessageDiv.innerHTML = 'Registrando...';
             responseMessageDiv.className = '';
@@ -195,9 +232,7 @@
                 if (data.status === 'SUCCESS') {
                     responseMessageDiv.innerHTML = '<p class="success">' + data.message + '</p>';
                     form.reset();
-                    document.getElementById('crianca').value = 'Não'; // Reseta 'Criança?' para o padrão
-                    // Manter o evento selecionado ou resetar dependendo da preferência
-                    // eventoSelect.selectedIndex = 0; // Para resetar a seleção do evento
+                    document.getElementById('crianca').value = 'Não';
                 } else {
                     responseMessageDiv.innerHTML = '<p class="error">' + data.message + '</p>';
                 }
@@ -208,11 +243,10 @@
             });
         });
 
-        // --- Lógica de Máscara para o campo Aniversário (DD/MM) ---
         const aniversarioInput = document.getElementById('aniversario');
 
         aniversarioInput.addEventListener('input', function (e) {
-            let input = e.target.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+            let input = e.target.value.replace(/\D/g, '');
             let formattedInput = '';
 
             if (input.length > 0) {
@@ -227,20 +261,15 @@
 
         aniversarioInput.addEventListener('blur', function (e) {
             let input = e.target.value;
-            // Se o usuário digitou apenas o dia (2 dígitos) e não a barra, adiciona a barra automaticamente
             if (input.length === 2 && !input.includes('/')) {
                 e.target.value = input + '/';
             }
-             // Se o campo não estiver vazio e não tiver 5 caracteres (DD/MM), avisa
             if (input.length > 0 && input.length < 5) {
                 responseMessageDiv.innerHTML = '<p class="error">Formato de aniversário inválido. Use DD/MM.</p>';
             } else {
-                responseMessageDiv.innerHTML = ''; // Limpa a mensagem se o formato estiver ok ou vazio
+                responseMessageDiv.innerHTML = '';
             }
         });
-        // --- Fim da Lógica de Máscara ---
-
     </script>
 </body>
 </html>
-
