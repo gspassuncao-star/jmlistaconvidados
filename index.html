@@ -5,88 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Entrada para Evento</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            box-sizing: border-box;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 25px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            font-weight: bold;
-            color: #555;
-            display: block;
-            margin-bottom: 8px;
-        }
-        input[type="text"],
-        input[type="tel"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #response-message {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #333;
-        }
-        .success {
-            color: green;
-            font-weight: bold;
-        }
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4; /* Cor de fundo de fallback */
+        background-image: url('fundo.jpg'); /* <<<<<<< SUBSTITUA PELO CAMINHO DA SUA IMAGEM DE FUNDO */
+        background-size: cover; /* Faz a imagem cobrir toda a área */
+        background-position: center center; /* Centraliza a imagem */
+        background-repeat: no-repeat; /* Evita que a imagem se repita */
+        background-attachment: fixed; /* Mantém o fundo fixo ao rolar a página */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .container {
+        background-color: rgba(255, 255, 255, 0.9); /* Fundo branco semi-transparente para o formulário */
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+        box-sizing: border-box;
+    }
+    /* Adicione estas regras para estilizar a logo */
+    #logo {
+        max-width: 150px; /* Largura máxima para a logo */
+        height: auto; /* Mantém a proporção original da imagem */
+        margin-bottom: 25px; /* Espaço abaixo da logo e antes do título */
+        display: block; /* Garante que a logo ocupe sua própria linha */
+        margin-left: auto; /* Centraliza a logo horizontalmente */
+        margin-right: auto; /* Centraliza a logo horizontalmente */
+    }
+    /* ... o restante do seu CSS permanece o mesmo ... */
+</style>
 </head>
 <body>
     <div class="container">
+        <img id="logo" src="logo.png" alt="Logo da Empresa/Evento">
         <h1>Registro de Entrada</h1>
         <form id="dataForm">
             <!-- Campo: Evento -->
@@ -284,3 +243,4 @@
     </script>
 </body>
 </html>
+
