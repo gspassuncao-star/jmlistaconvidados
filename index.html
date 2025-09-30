@@ -247,15 +247,15 @@
                 <div class="accompaniments-inputs">
                     <div>
                         <label for="acompanhantesAdultos">Adultos:</label>
-                        <input type="tel" id="acompanhantesAdultos" name="acompanhantesAdultos" inputmode="numeric" pattern="[0-9]*" value="0" min="0">
+                        <input type="tel" id="acompanhantesAdultos" name="acompanhantesAdultos" inputmode="numeric" pattern="[0-9]*" min="0">
                     </div>
                     <div>
-                        <label for="acompanhantes6_10">Criança 6-10:</label>
-                        <input type="tel" id="acompanhantes6_10" name="acompanhantes6_10" inputmode="numeric" pattern="[0-9]*" value="0" min="0">
+                        <label for="acompanhantes6_10">6 a 10 anos:</label>
+                        <input type="tel" id="acompanhantes6_10" name="acompanhantes6_10" inputmode="numeric" pattern="[0-9]*" min="0">
                     </div>
                     <div>
-                        <label for="acompanhantes0_5">Criança 0-5:</label>
-                        <input type="tel" id="acompanhantes0_5" name="acompanhantes0_5" inputmode="numeric" pattern="[0-9]*" value="0" min="0">
+                        <label for="acompanhantes0_5">0 a 5 anos:</label>
+                        <input type="tel" id="acompanhantes0_5" name="acompanhantes0_5" inputmode="numeric" pattern="[0-9]*" min="0">
                     </div>
                 </div>
             </div>
@@ -289,7 +289,7 @@
     </div>
 
     <script>
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbyJGYsiJdkRE1AtEulywbSGhIJ7Ap7Wp2LOcOUV0kXAu5Shxw2wIeAB7yQRxvi7kUU/exec"; // SUBSTITUA AQUI PELO URL DO SEU GOOGLE APPS SCRIPT
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbzJeyjco50gUPFE3KhpJ-hdCptcxs3uj4KbOUyC6avlJttcFtFzqvASSRAKnsYYJmc/exec"; // SUBSTITUA AQUI PELO URL DO SEU GOOGLE APPS SCRIPT
         const eventoSelect = document.getElementById('evento');
         const responseMessageDiv = document.getElementById('response-message');
         const editEventsBtn = document.getElementById('editEventsBtn');
@@ -436,7 +436,7 @@
                     responseMessageDiv.innerHTML = '<p class="success">' + data.message + '</p>';
                     form.reset();
                     document.getElementById('crianca').value = 'Não';
-                    // Reset acompanhantes fields to 0 (already set by form.reset() due to value="0")
+                    // Reset acompanhantes fields to empty (as they are now)
                 } else {
                     responseMessageDiv.innerHTML = '<p class="error">' + data.message + '</p>';
                 }
