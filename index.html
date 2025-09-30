@@ -17,7 +17,6 @@
             box-sizing: border-box;
         }
         .container {
-            /* Mantemos a semi-transparência ou podemos remover o 'a' se quiser um branco sólido */
             background-color: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 8px;
@@ -26,6 +25,7 @@
             width: 100%;
             max-width: 500px;
             box-sizing: border-box;
+            position: relative; /* Necessário para o modal */
         }
         #logo {
             max-width: 150px;
@@ -35,7 +35,6 @@
             margin-left: auto;
             margin-right: auto;
         }
-        /* ... o restante do seu CSS (form-group, label, input, etc.) permanece o mesmo ... */
         .form-group {
             margin-bottom: 20px;
             text-align: left;
@@ -89,6 +88,110 @@
             color: red;
             font-weight: bold;
         }
+
+        /* Estilos para o novo botão de edição de eventos */
+        #editEventsBtn {
+            background-color: #007bff; /* Cor azul para o botão de editar */
+            margin-top: 10px;
+        }
+        #editEventsBtn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilos para a nova seção de acompanhantes */
+        .accompaniments-section {
+            background-color: #e6f7ff; /* Cor azul claro */
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px; /* Adiciona um pouco de espaço acima */
+        }
+        .accompaniments-section > label { /* Usar > label para não afetar os sub-labels */
+            color: #007bff; /* Azul para o título da seção */
+            text-align: center;
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.1em; /* Título um pouco maior */
+        }
+        .accompaniments-inputs {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .accompaniments-inputs > div {
+            flex: 1; /* Faz com que as colunas ocupem espaço igual */
+        }
+        .accompaniments-inputs label {
+            font-size: 0.9em; /* Label do campo menor */
+            margin-bottom: 5px;
+            display: block; /* Garante que a label ocupe sua própria linha */
+            text-align: left; /* Alinha labels à esquerda */
+            color: #555; /* Cor padrão para labels */
+        }
+        .accompaniments-inputs input[type="tel"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 1em;
+            border: 1px solid #cceeff; /* Borda um pouco mais clara para combinar com o fundo */
+            border-radius: 5px;
+            box-sizing: border-box;
+            text-align: center; /* Centraliza o numeral */
+        }
+
+
+        /* Estilos para o modal de edição de eventos */
+        .modal-overlay {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
+            text-align: left;
+            position: relative;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .modal-content textarea {
+            min-height: 200px;
+            margin-bottom: 20px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .modal-buttons button {
+            width: 48%; /* Para ocupar metade da largura cada */
+            margin-top: 0; /* Remove a margem superior padrão */
+        }
+        .modal-buttons .save-button {
+            background-color: #28a745;
+        }
+        .modal-buttons .save-button:hover {
+            background-color: #218838;
+        }
+        .modal-buttons .cancel-button {
+            background-color: #dc3545;
+        }
+        .modal-buttons .cancel-button:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -138,6 +241,25 @@
                 </select>
             </div>
 
+            <!-- Nova Seção: Acompanhantes -->
+            <div class="form-group accompaniments-section">
+                <label>Acompanhantes:</label>
+                <div class="accompaniments-inputs">
+                    <div>
+                        <label for="acompanhantesAdultos">Adultos:</label>
+                        <input type="tel" id="acompanhantesAdultos" name="acompanhantesAdultos" inputmode="numeric" pattern="[0-9]*" value="0" min="0">
+                    </div>
+                    <div>
+                        <label for="acompanhantes6_10">Criança 6-10:</label>
+                        <input type="tel" id="acompanhantes6_10" name="acompanhantes6_10" inputmode="numeric" pattern="[0-9]*" value="0" min="0">
+                    </div>
+                    <div>
+                        <label for="acompanhantes0_5">Criança 0-5:</label>
+                        <input type="tel" id="acompanhantes0_5" name="acompanhantes0_5" inputmode="numeric" pattern="[0-9]*" value="0" min="0">
+                    </div>
+                </div>
+            </div>
+
             <!-- Campo: Observação (Campo livre) -->
             <div class="form-group">
                 <label for="observacao">Observação:</label>
@@ -146,14 +268,38 @@
 
             <button type="submit">Registrar Entrada</button>
         </form>
+        <!-- Botão de edição de eventos -->
+        <button type="button" id="editEventsBtn">Editar Eventos</button>
+
         <div id="response-message"></div>
     </div>
 
+    <!-- Modal para edição de eventos -->
+    <div id="editEventsModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Editar Eventos Disponíveis</h2>
+            <p>Liste um evento por linha. Linhas vazias serão ignoradas.</p>
+            <textarea id="eventsEditor" placeholder="Evento 1&#10;Evento 2&#10;..."></textarea>
+            <div class="modal-buttons">
+                <button type="button" class="save-button" id="saveEventsBtn">Salvar Eventos</button>
+                <button type="button" class="cancel-button" id="cancelEditBtn">Cancelar</button>
+            </div>
+            <div id="edit-response-message" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
     <script>
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbxX7AQ2SFJyyyzbjKC9Jutrxd_DrGxpauNi-jLX400DZ7wdNPFq4gu6pR-5BRH6u9k/exec"; // SUBSTITUA AQUI PELO URL DO SEU GOOGLE APPS SCRIPT
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbyJGYsiJdkRE1AtEulywbSGhIJ7Ap7Wp2LOcOUV0kXAu5Shxw2wIeAB7yQRxvi7kUU/exec"; // SUBSTITUA AQUI PELO URL DO SEU GOOGLE APPS SCRIPT
         const eventoSelect = document.getElementById('evento');
         const responseMessageDiv = document.getElementById('response-message');
+        const editEventsBtn = document.getElementById('editEventsBtn');
+        const editEventsModal = document.getElementById('editEventsModal');
+        const eventsEditor = document.getElementById('eventsEditor');
+        const saveEventsBtn = document.getElementById('saveEventsBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editResponseMessageDiv = document.getElementById('edit-response-message');
 
+        // Função para carregar eventos para o dropdown
         async function loadEvents() {
             eventoSelect.innerHTML = '<option value="">Carregando eventos...</option>';
             try {
@@ -162,16 +308,16 @@
 
                 if (data.status === 'SUCCESS' && data.events) {
                     eventoSelect.innerHTML = '';
-                    data.events.forEach(event => {
-                        const option = document.createElement('option');
-                        option.value = event;
-                        option.textContent = event;
-                        eventoSelect.appendChild(option);
-                    });
-                    if (data.events.length > 0) {
-                        eventoSelect.selectedIndex = 0;
-                    } else {
+                    if (data.events.length === 0) {
                         eventoSelect.innerHTML = '<option value="">Nenhum evento disponível</option>';
+                    } else {
+                        data.events.forEach(event => {
+                            const option = document.createElement('option');
+                            option.value = event;
+                            option.textContent = event;
+                            eventoSelect.appendChild(option);
+                        });
+                        eventoSelect.selectedIndex = 0; // Seleciona o primeiro por padrão
                     }
                 } else {
                     responseMessageDiv.innerHTML = '<p class="error">Erro ao carregar eventos: ' + (data.message || 'Erro desconhecido') + '</p>';
@@ -181,6 +327,62 @@
                 console.error('Erro de rede ao carregar eventos:', error);
                 responseMessageDiv.innerHTML = '<p class="error">Erro de conexão ao carregar eventos.</p>';
                 eventoSelect.innerHTML = '<option value="">Erro de conexão</option>';
+            }
+        }
+
+        // Função para carregar eventos na área de texto do modal (para edição)
+        async function loadEventsForEditing() {
+            editResponseMessageDiv.innerHTML = 'Carregando eventos para edição...';
+            editResponseMessageDiv.className = '';
+            try {
+                const response = await fetch(`${webAppUrl}?action=getEvents`);
+                const data = await response.json();
+
+                if (data.status === 'SUCCESS' && data.events) {
+                    eventsEditor.value = data.events.join('\n'); // Coloca cada evento em uma nova linha
+                    editResponseMessageDiv.innerHTML = '';
+                } else {
+                    editResponseMessageDiv.innerHTML = '<p class="error">Erro ao carregar eventos para edição: ' + (data.message || 'Erro desconhecido') + '</p>';
+                    eventsEditor.value = 'Erro ao carregar eventos.';
+                }
+            } catch (error) {
+                console.error('Erro de rede ao carregar eventos para edição:', error);
+                editResponseMessageDiv.innerHTML = '<p class="error">Erro de conexão ao carregar eventos para edição.</p>';
+                eventsEditor.value = 'Erro de conexão.';
+            }
+        }
+
+        // Função para salvar os eventos editados
+        async function saveEditedEvents() {
+            editResponseMessageDiv.innerHTML = 'Salvando eventos...';
+            editResponseMessageDiv.className = '';
+            const newEventsRaw = eventsEditor.value;
+            const newEvents = newEventsRaw.split('\n').map(event => event.trim()).filter(event => event !== ''); // Limpa e remove linhas vazias
+
+            const formData = new FormData();
+            formData.append('action', 'saveEvents');
+            formData.append('events', JSON.stringify(newEvents)); // Envia como string JSON
+
+            try {
+                const response = await fetch(webAppUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const data = await response.json();
+
+                if (data.status === 'SUCCESS') {
+                    editResponseMessageDiv.innerHTML = '<p class="success">' + data.message + '</p>';
+                    await loadEvents(); // Recarrega a lista no dropdown principal
+                    setTimeout(() => {
+                        editEventsModal.style.display = 'none';
+                        editResponseMessageDiv.innerHTML = ''; // Limpa a mensagem ao fechar
+                    }, 1500); // Fecha o modal após um tempo
+                } else {
+                    editResponseMessageDiv.innerHTML = '<p class="error">Erro ao salvar eventos: ' + (data.message || 'Erro desconhecido') + '</p>';
+                }
+            } catch (error) {
+                console.error('Erro de rede ao salvar eventos:', error);
+                editResponseMessageDiv.innerHTML = '<p class="error">Erro de conexão ao salvar eventos.</p>';
             }
         }
 
@@ -196,6 +398,7 @@
             const celularInput = document.getElementById('celular');
             const numeroComandaInput = document.getElementById('numeroComanda');
 
+            // Validações existentes
             if (aniversarioInput.value && (aniversarioInput.value.length !== 5 || aniversarioInput.value.indexOf('/') !== 2)) {
                 responseMessageDiv.innerHTML = '<p class="error">Por favor, digite o aniversário no formato DD/MM válido.</p>';
                 aniversarioInput.focus();
@@ -233,6 +436,7 @@
                     responseMessageDiv.innerHTML = '<p class="success">' + data.message + '</p>';
                     form.reset();
                     document.getElementById('crianca').value = 'Não';
+                    // Reset acompanhantes fields to 0 (already set by form.reset() due to value="0")
                 } else {
                     responseMessageDiv.innerHTML = '<p class="error">' + data.message + '</p>';
                 }
@@ -243,8 +447,8 @@
             });
         });
 
+        // Máscara de aniversário
         const aniversarioInput = document.getElementById('aniversario');
-
         aniversarioInput.addEventListener('input', function (e) {
             let input = e.target.value.replace(/\D/g, '');
             let formattedInput = '';
@@ -261,15 +465,30 @@
 
         aniversarioInput.addEventListener('blur', function (e) {
             let input = e.target.value;
-            if (input.length === 2 && !input.includes('/')) {
-                e.target.value = input + '/';
-            }
+            // Validação de formato apenas no blur se o campo não estiver vazio
             if (input.length > 0 && input.length < 5) {
                 responseMessageDiv.innerHTML = '<p class="error">Formato de aniversário inválido. Use DD/MM.</p>';
             } else {
-                responseMessageDiv.innerHTML = '';
+                // Clear the error message if the format is correct or empty, ONLY if it's the anniversary error
+                if (responseMessageDiv.querySelector('.error') && responseMessageDiv.innerHTML.includes('Formato de aniversário inválido')) {
+                    responseMessageDiv.innerHTML = '';
+                }
             }
         });
+
+
+        // Listeners para o modal de edição de eventos
+        editEventsBtn.addEventListener('click', () => {
+            editEventsModal.style.display = 'flex'; // Mostra o modal
+            loadEventsForEditing(); // Carrega os eventos atuais na área de texto
+        });
+
+        cancelEditBtn.addEventListener('click', () => {
+            editEventsModal.style.display = 'none'; // Esconde o modal
+            editResponseMessageDiv.innerHTML = ''; // Limpa mensagens de resposta
+        });
+
+        saveEventsBtn.addEventListener('click', saveEditedEvents);
     </script>
 </body>
 </html>
